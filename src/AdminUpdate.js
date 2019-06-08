@@ -7,7 +7,8 @@ class AdminUpdate extends Component {
         loaded: false,
         data: undefined,
         priceList: "ALL_INCLUSIVE",
-        newPeriod: false
+        newPeriod: false,
+        updatedPriceList: "ALL_INCLUSIVE"
     }
 
     twoIntString = (value) => {
@@ -23,7 +24,10 @@ class AdminUpdate extends Component {
 
     updatePriceList = (event) => {
         const priceList = event.target.value;
-        this.setState({priceList: priceList});
+        this.setState({
+            priceList: priceList,
+            updatedPriceList: priceList
+        });
     }
 
     displayNewPeriodForm = () => {
@@ -46,13 +50,17 @@ class AdminUpdate extends Component {
         this.setState({data: newData});
     }
 
+    syncPricelistNameHandler = (e) => {
+        this.setState({updatedPriceList: e.target.value});
+    }
+
     displayPriceLists = () => {
         const periods = Object.keys(this.state.data[this.state.priceList]);
         const priceLists = Object.values(this.state.data[this.state.priceList]);
         return priceLists.map((priceList, i) => {
             return (
                 <form key={i} method="post" action="http://localhost:9000/priceList/manage">
-                    <input type="text" value={priceList.name} name="name" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
+                    <input type="text" value={this.state.updatedPriceList} name="name" onChange={this.syncPricelistNameHandler} required/>
                     <input type="text" defaultValue={periods[i]} name="period" required/>
                     <input type="date" value={this.dateValue(priceList.start)} name="start" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
                     <input type="date" value={this.dateValue(priceList.end)} name="end" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
@@ -116,7 +124,7 @@ class AdminUpdate extends Component {
                             value={this.state.priceList}
                             updatePriceList={this.updatePriceList}
                         />
-                        <button onClick={() =>this.displayNewPeriodForm()}>New Period</button>
+                        <button onClick={this.displayNewPeriodForm}>New Period</button>
                     </div>
                     <div className="container">
                         <div className="header">
