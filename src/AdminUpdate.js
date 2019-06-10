@@ -5,10 +5,11 @@ import SelectListini from './components/SelectListini';
 class AdminUpdate extends Component {
     state = {
         loaded: false,
+        newPeriod: false,
         data: undefined,
         priceList: "ALL_INCLUSIVE",
-        newPeriod: false,
-        updatedPriceList: "ALL_INCLUSIVE"
+        priceLists: [],
+        updatedPeriodsNames: []
     }
 
     twoIntString = (value) => {
@@ -24,9 +25,10 @@ class AdminUpdate extends Component {
 
     updatePriceList = (event) => {
         const priceList = event.target.value;
+        const updatedPeriodsNames = Object.keys(this.state.data[priceList]);
         this.setState({
-            priceList: priceList,
-            updatedPriceList: priceList
+            priceList,
+            updatedPeriodsNames
         });
     }
 
@@ -39,7 +41,7 @@ class AdminUpdate extends Component {
         this.setState({newPeriod: false});
     }
 
-    valueUpdateHandler = (event, period,isPrices) => {
+    valueUpdateHandler = (event, period, isPrices) => {
         const newData = {...this.state.data};
         const name = event.target.name;
         const value = event.target.value;
@@ -50,18 +52,13 @@ class AdminUpdate extends Component {
         this.setState({data: newData});
     }
 
-    syncPricelistNameHandler = (e) => {
-        this.setState({updatedPriceList: e.target.value});
-    }
-
     displayPriceLists = () => {
-        const periods = Object.keys(this.state.data[this.state.priceList]);
+        const periods = this.state.updatedPeriodsNames;
         const priceLists = Object.values(this.state.data[this.state.priceList]);
         return priceLists.map((priceList, i) => {
             return (
                 <form key={i} method="post" action="http://localhost:9000/priceList/manage">
-                    <input type="text" value={this.state.updatedPriceList} name="name" onChange={this.syncPricelistNameHandler} required/>
-                    <input type="text" defaultValue={periods[i]} name="period" required/>
+                    <input type="text" value={priceList.period} name="period" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
                     <input type="date" value={this.dateValue(priceList.start)} name="start" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
                     <input type="date" value={this.dateValue(priceList.end)} name="end" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
                     <input type="number" value={priceList.prices.ad} name="ad" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
@@ -73,7 +70,7 @@ class AdminUpdate extends Component {
                     <input type="number" value={priceList.prices.animal} name="animal" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
                     <input type="number" value={priceList.prices.sing} name="sing" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
                     <input type="hidden" value={priceList._id} name="id" />
-                    <input className="btn btn-update" type="submit" value="Update" name="update"/>
+                    <input className="btn btn-update" type="submit" value="Update" name="update" id={priceList._id} onClick={(e) => this.submitHandler(e, i)}/>
                     <input className="btn btn-delete" type="submit" value="Delete" name="delete"/>
                 </form>
             );
@@ -84,7 +81,6 @@ class AdminUpdate extends Component {
         if (this.state.newPeriod) {
             return(
                 <form method="post" action="http://localhost:9000/priceList/addNewPeriod">
-                    <input type="text" defaultValue={this.state.priceList} name="name" required/>
                     <input type="text" name="period" required/>
                     <input type="date" name="start" required/>
                     <input type="date"  name="end" required/>
@@ -106,10 +102,54 @@ class AdminUpdate extends Component {
     componentDidMount() {
         const data = this.props.data;
         const priceLists = Object.keys(data);
+        const updatedPeriodsNames = Object.keys(data[this.state.priceList]);
         this.setState({
             loaded: true,
-            data: data,
-            priceLists: priceLists
+            data,
+            priceLists,
+            updatedPeriodsNames
+        });
+    }
+
+    displayFeedback = () => {
+        if (this.state.message) {
+            return (
+                <div className={this.state.success ? "success" : "error"}>
+                    <p>{this.state.message}</p>
+                </div>
+            );
+        }
+    }
+
+    submitHandler = (e, i) => {
+        e.preventDefault();
+
+        const updatedPeriod = Object.values(this.state.data[this.state.priceList]).filter(p => p._id === e.target.id)[0];
+        
+        this.setState({
+            loaded: false,
+          });
+        
+        fetch('http://localhost:9000/priceList/manage', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({priceList: JSON.stringify(updatedPeriod), update: "Update"})
+        })
+        .then(res => res.json())
+        .then(json => {
+            if (json.success) {
+                this.setState({
+                    success: true,
+                    message: json.message,
+                    loaded: true
+                });
+            } else {
+                this.setState({
+                    success: false,  
+                    message: json.message,
+                    loaded: true,
+                });
+            }
         });
     }
 
@@ -126,9 +166,9 @@ class AdminUpdate extends Component {
                         />
                         <button onClick={this.displayNewPeriodForm}>New Period</button>
                     </div>
+                    { this.displayFeedback() }
                     <div className="container">
                         <div className="header">
-                            <p>Name</p>
                             <p>Period</p>
                             <p>Start</p>
                             <p>End</p>
