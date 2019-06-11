@@ -21,10 +21,29 @@ class MainApp extends Component {
     prices: [] //[["a", {...}], ["b", {...}]]
   }
 
+  componentDidMount() {
+    const {data} = this.props;
+    const {priceList} = this.state;
+    const today = new Date();
+    const todayTimestamp = today.getTime();
+    const tomorrowTimestamp = todayTimestamp + 86400000;
+    const priceLists = Object.keys(data);
+    const selectedDays = this.manageDays(todayTimestamp, tomorrowTimestamp, data[priceList]);
+    this.setState({
+      data,
+      loaded: true,
+      arrival: todayTimestamp,
+      departure: tomorrowTimestamp,
+      days: selectedDays,
+      priceLists: priceLists,
+      prices: this.selectPrices(selectedDays, this.state.priceList, data)
+    });
+  }
+
   //value: integer
   twoIntString = (value) => {
     let stringValue = value.toString();
-    if (stringValue.length < 2) stringValue = "0" + stringValue;
+    if (stringValue.length < 2) stringValue = `0${stringValue}`;
     return stringValue;
   }
 
@@ -49,11 +68,8 @@ class MainApp extends Component {
 
   totalAmount = () => {
     let totalAmount = [];
-    let days = this.state.days;
-    let rooming = this.state.rooming;
-    let priceList = this.state.priceList;
-    const data = this.state.data;
-
+    const {days, rooming, priceList, data} = this.state;
+    
     for(let i = 0; i < days.length; i++) {
       for(let j = 0; j < days[i][1].length; j++) {
         totalAmount.push(this.dailyAmount(rooming, data[priceList][days[i][0]].prices));
@@ -103,26 +119,7 @@ class MainApp extends Component {
   //priceList: string
   //data: object {priceList1: {a: {prices: {}, ...}, b: {prices: {}, ...}, ...}, ...}
   //Return prices of the selected periods: array [["a", {...}], ["b", {...}]]
-  selectPrices = (days, priceList, data) => days.map(x => [x[0], data[priceList][x[0]].prices]);
-
-
-  componentDidMount() {
-    const today = new Date();
-    const todayTimestamp = today.getTime();
-    const tomorrowTimestamp = todayTimestamp + 86400000;
-    const data = this.props.data;
-    const priceLists = Object.keys(data);
-    const selectedDays = this.manageDays(todayTimestamp, tomorrowTimestamp, data[this.state.priceList]);
-    this.setState({
-      data: data,
-      loaded: true,
-      arrival: todayTimestamp,
-      departure: tomorrowTimestamp,
-      days: selectedDays,
-      priceLists: priceLists,
-      prices: this.selectPrices(selectedDays, this.state.priceList, data)
-    });
-  }
+  selectPrices = (days, priceList, data) => days.map(([period, days]) => [period, data[priceList][period].prices]);
 
   getTimestamp = (event) => {
     console.log(event.target.value);
@@ -132,13 +129,14 @@ class MainApp extends Component {
   }
 
   updateArrival = (event) => {
+    const {departure, data, priceList} = this.state;
     const startDate = this.getTimestamp(event);
-    if (startDate < this.state.departure) {
-      let days = this.manageDays(startDate, this.state.departure, this.state.data[this.state.priceList]);
+    if (startDate < departure) {
+      let days = this.manageDays(startDate, departure, data[priceList]);
       this.setState({
         arrival: startDate,
-        days: days,
-        prices: this.selectPrices(days, this.state.priceList, this.state.data)
+        days,
+        prices: this.selectPrices(days, priceList, data)
       });
     } else {
       this.setState({arrival: startDate});
@@ -146,13 +144,14 @@ class MainApp extends Component {
   }
 
   updateDeparture = (event) => {
+    const {arrival, data, priceList} = this.state;
     const endDate = this.getTimestamp(event);
-    if (this.state.arrival < endDate) {
-      let days = this.manageDays(this.state.arrival, endDate, this.state.data[this.state.priceList]);
+    if (arrival < endDate) {
+      let days = this.manageDays(arrival, endDate, data[priceList]);
       this.setState({
         departure: endDate,
-        days: days,
-        prices: this.selectPrices(days, this.state.priceList, this.state.data)
+        days,
+        prices: this.selectPrices(days, priceList, data)
       });
     } else {
       this.setState({departure: endDate});
@@ -167,19 +166,19 @@ class MainApp extends Component {
   }
 
   updatePriceList = (event) => {
+    const {days, data} = this.state;
     const priceList = event.target.value;
     this.setState({
-      priceList: priceList,
-      prices: this.selectPrices(this.state.days, priceList, this.state.data)
+      priceList,
+      prices: this.selectPrices(days, priceList, data)
     });
   }
 
   updateRooming = (event) => {
     const rooming = {...this.state.rooming};
     const id = event.target.id;
-    const value = parseInt(event.target.value);
-    rooming[id] = value;
-    this.setState({rooming: rooming});
+    rooming[id] = parseInt(event.target.value);
+    this.setState({rooming});
   }
 
   updatePrices = (event) => {
@@ -192,40 +191,41 @@ class MainApp extends Component {
         prices[i][1][id] = value;
       }
     }
-    this.setState({prices: prices});
+    this.setState({prices});
   }
 
   render() {
-    if(this.state.loaded) {
+    const {loaded, arrival, departure, priceList, priceLists, rooming, days, prices} = this.state;
+    if(loaded) {
       return (
         <div className="App">
           <div id="first_section">
             <Dates
               updateArrival={this.updateArrival}
               updateDeparture={this.updateDeparture}
-              valueArr={this.dateValue(this.state.arrival)}
-              valueDep={this.dateValue(this.state.departure)}/>
+              valueArr={this.dateValue(arrival)}
+              valueDep={this.dateValue(departure)}/>
             <SelectListini
-              priceLists={this.state.priceLists}
-              value={this.state.priceList}
+              priceLists={priceLists}
+              value={priceList}
               updatePriceList={this.updatePriceList}/>
             <TotalAmount total={this.totalAmount()}/>
           </div>
           <div id="second_section">
             <Rooming
-              value={this.state.rooming}
+              value={rooming}
               updateRooming={this.updateRooming}/>
             <PricesList
-              prices={this.state.prices}
-              days={this.state.days}
+              prices={prices}
+              days={days}
               updatePrices={this.updatePrices}/>
           </div>
           <div id="resumeTable">
             <h2>Resume Table</h2>
             <Table 
-              days={this.state.days}
-              prices={this.state.prices}
-              rooming={this.state.rooming}
+              days={days}
+              prices={prices}
+              rooming={rooming}
               total={this.totalAmount()}/>
           </div>
         </div>
@@ -237,7 +237,6 @@ class MainApp extends Component {
 }
 
 MainApp.propTypes = {
-  match: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired  
 }
 

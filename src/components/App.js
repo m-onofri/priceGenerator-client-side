@@ -31,10 +31,7 @@ class App extends Component {
                             <NavLink exact activeClassName="active" className="link" to="/">Price Generator</NavLink>
                             <NavLink activeClassName="active" className="link" to="/admin">Admin Page</NavLink>
                         </div>
-                        <Route exact path="/" render={(props) =>  <MainApp
-                                                                    match={props.match}
-                                                                    data={data}             
-                                                                />} />
+                        <Route exact path="/" render={() =>  <MainApp data={data} />} />
                         <Route path="/admin" render={(props) => <Admin
                                                                     match={props.match}
                                                                     data={data}             
