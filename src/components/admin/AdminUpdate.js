@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import SelectListini from './components/SelectListini';
+import SelectListini from '../SelectListini';
 
 class AdminUpdate extends Component {
     state = {

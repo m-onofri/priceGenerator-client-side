@@ -15,15 +15,15 @@ class App extends Component {
             .then(res => res.json())
             .then(data => {
                 this.setState({
-                data: data,
+                data,
                 loaded: true
             });
         });
     }
 
     render() {
-        
-        if (this.state.loaded) {
+        const {loaded, data} = this.state;
+        if (loaded) {
             return(
                 <Router>
                     <div>
@@ -33,11 +33,11 @@ class App extends Component {
                         </div>
                         <Route exact path="/" render={(props) =>  <MainApp
                                                                     match={props.match}
-                                                                    data={this.state.data}             
+                                                                    data={data}             
                                                                 />} />
                         <Route path="/admin" render={(props) => <Admin
                                                                     match={props.match}
-                                                                    data={this.state.data}             
+                                                                    data={data}             
                                                                 />} />
                     </div>
                 </Router>

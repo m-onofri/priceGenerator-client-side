@@ -1,5 +1,5 @@
 import React from 'react';
-import RoomingElement from './RoomingElement.js';
+import RoomingElement from './RoomingElement';
 import PropTypes from 'prop-types';
 
 const Rooming = props =>

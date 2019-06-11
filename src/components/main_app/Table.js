@@ -1,5 +1,5 @@
 import React from 'react';
-import Resume from './Resume.js';
+import Resume from './Resume';
 import PropTypes from 'prop-types';
 
 const Table = props => {

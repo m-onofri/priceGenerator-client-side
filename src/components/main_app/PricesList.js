@@ -1,5 +1,5 @@
 import React from 'react';
-import Prices from './Prices.js';
+import Prices from './Prices';
 import PropTypes from 'prop-types';
 
 const PricesList = props =>

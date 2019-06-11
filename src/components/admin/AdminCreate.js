@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Periods from './components/Periods';
+import Periods from './Periods';
 
 class AdminCreate extends Component {
     state = {

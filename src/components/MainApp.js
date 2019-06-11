@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Dates from './components/Dates.js';
-import SelectListini from './components/SelectListini.js';
-import Rooming from './components/Rooming.js';
-import PricesList from './components/PricesList.js';
-import Table from './components/Table.js';
-import TotalAmount from './components/TotalAmount.js';
+import Dates from './main_app/Dates';
+import SelectListini from './SelectListini.js';
+import Rooming from './main_app/Rooming';
+import PricesList from './main_app/PricesList';
+import Table from './main_app/Table';
+import TotalAmount from './main_app/TotalAmount';
 import './App.css';
 
 class MainApp extends Component {
