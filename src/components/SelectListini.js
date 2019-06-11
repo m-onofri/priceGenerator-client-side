@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SelectListini = props =>
+const SelectListini = ({updatePriceList, value, priceLists}) =>
   <div id="pricelists">
     <label>Price Lists</label>
     <select
       id="listini"
       name="listini"
-      onChange={props.updatePriceList}
-      value={props.value}>
-        {props.priceLists.map((x, i) => <option key={i} value={x}>{x}</option>)}
+      onChange={updatePriceList}
+      value={value}>
+        {priceLists.map((x, i) => <option key={i} value={x}>{x}</option>)}
     </select>
   </div>
 
