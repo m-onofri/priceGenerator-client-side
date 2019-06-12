@@ -2,24 +2,25 @@ import React from 'react';
 import Resume from './Resume';
 import PropTypes from 'prop-types';
 
-const Table = props => {
+const Table = ({rooming, days, prices, total}) => {
 
   //Remove the rooming items equal to zero
-  const roomingArr = Object.entries(props.rooming).filter(r => r[1] !== 0);
+  //Return => [["ad", 2], ...]
+  const roomingArr = Object.entries(rooming).filter(([, number]) => number !== 0);
 
   return (
     <table>
       <tbody>
         <tr>
           <th>Date</th>
-          {roomingArr.map(r => <th>{r[0]}</th>)}
+          {roomingArr.map(([category,]) => <th>{category}</th>)}
           <th>Total</th>
         </tr>
         <Resume
-          days={props.days}
-          prices={props.prices}
-          rooming={props.rooming}
-          total={props.total}/>
+          days={days}
+          prices={prices}
+          rooming={rooming}
+          total={total}/>
       </tbody>
     </table>
   )

@@ -4,22 +4,20 @@ import { Route, NavLink, BrowserRouter as Router } from 'react-router-dom';
 import AdminCreate from './admin/AdminCreate';
 import AdminUpdate from './admin/AdminUpdate';
 
-const Admin = () => {
-    return(
-        <Router>
-            <div>
-                <div id="first_section">
-                    <div className="admin-nav">
-                        <NavLink exact activeClassName="active-bis" className="link-bis" to="/admin">Update Price Lists</NavLink>
-                        <NavLink activeClassName="active-bis" className="link-bis" to="/admin/create">Create Price Lists</NavLink>
-                    </div>
+const Admin = ({data}) => 
+    
+    <Router>
+        <div>
+            <div id="first_section">
+                <div className="admin-nav">
+                    <NavLink exact activeClassName="active-bis" className="link-bis" to="/admin">Update Price Lists</NavLink>
+                    <NavLink activeClassName="active-bis" className="link-bis" to="/admin/create">Create Price Lists</NavLink>
                 </div>
-                <Route exact path="/admin" render={() =>  <AdminUpdate data={this.props.data} />}  />
-                <Route path="/admin/create" component={AdminCreate} />
             </div>
-        </Router>   
-    );
-}
+            <Route exact path="/admin" render={() =>  <AdminUpdate data={data} />}  />
+            <Route path="/admin/create" component={AdminCreate} />
+        </div>
+    </Router>   
 
 Admin.propTypes = {
     match: PropTypes.object.isRequired,

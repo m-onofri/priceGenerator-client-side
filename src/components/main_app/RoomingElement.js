@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const RoomingElement = props =>
+const RoomingElement = ({title, id, value, updateRooming}) =>
 <div className="rooming">
-  <label>{props.title}</label>
-  <input id={props.id} type="number" value={props.value} onChange={props.updateRooming}/>
+  <label>{title}</label>
+  <input id={id} type="number" value={value} onChange={updateRooming}/>
 </div>
 
 RoomingElement.propTypes = {

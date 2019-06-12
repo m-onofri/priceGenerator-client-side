@@ -2,19 +2,19 @@ import React from 'react';
 import RoomingElement from './RoomingElement';
 import PropTypes from 'prop-types';
 
-const Rooming = props =>
+const Rooming = ({value, updateRooming}) =>
   <div className="list">
     <p style={{textAlign: "center"}}>Rooming</p>
     <p>______________________</p>
     <p>______________________</p>
-    <RoomingElement title="adulti" id="ad" value={props.value.ad} updateRooming={props.updateRooming}/>
-    <RoomingElement title="adulti 3-4 letto" id="ad34" value={props.value.ad34} updateRooming={props.updateRooming}/>
-    <RoomingElement title="chd 3 letto" id="chd3" value={props.value.chd3} updateRooming={props.updateRooming}/>
-    <RoomingElement title="chd 4 letto" id="chd4" value={props.value.chd4} updateRooming={props.updateRooming}/>
-    <RoomingElement title="infant" id="inf" value={props.value.inf} updateRooming={props.updateRooming}/>
-    <RoomingElement title="animal" id="animal" value={props.value.animal} updateRooming={props.updateRooming}/>
-    <RoomingElement title="culla" id="culla" value={props.value.culla} updateRooming={props.updateRooming}/>
-    <RoomingElement title="supp. singola" id="sing" value={props.value.sing} updateRooming={props.updateRooming}/>
+    <RoomingElement title="adulti" id="ad" value={value.ad} updateRooming={updateRooming}/>
+    <RoomingElement title="adulti 3-4 letto" id="ad34" value={value.ad34} updateRooming={updateRooming}/>
+    <RoomingElement title="chd 3 letto" id="chd3" value={value.chd3} updateRooming={updateRooming}/>
+    <RoomingElement title="chd 4 letto" id="chd4" value={value.chd4} updateRooming={updateRooming}/>
+    <RoomingElement title="infant" id="inf" value={value.inf} updateRooming={updateRooming}/>
+    <RoomingElement title="animal" id="animal" value={value.animal} updateRooming={updateRooming}/>
+    <RoomingElement title="culla" id="culla" value={value.culla} updateRooming={updateRooming}/>
+    <RoomingElement title="supp. singola" id="sing" value={value.sing} updateRooming={updateRooming}/>
   </div>
 
 Rooming.propTypes = {
