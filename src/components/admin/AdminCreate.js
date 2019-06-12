@@ -30,12 +30,13 @@ class AdminCreate extends Component {
 
     buttonClickHandler = () => {
         let priceList = [];
+        const {periods, name} = this.state;
         const todayDate = new Date();
         const todayString = `${todayDate.getFullYear()}-${this.twoIntString(todayDate.getMonth() + 1)}-${this.twoIntString(todayDate.getDate())}`;
-        for (let j = 0; j < this.state.periods; j++) {
+        for (let j = 0; j < periods; j++) {
             const periodName = String.fromCharCode(97 + j);
             priceList.push([periodName, {
-                name: this.state.name,
+                name: name,
                 period: periodName,
                 start: todayString,
                 end: todayString,
@@ -46,7 +47,7 @@ class AdminCreate extends Component {
                 inf: 0,
                 animal: 5,
                 culla: 10,
-                sing: 15}])
+                sing: 15}]);
         }
         this.setState({priceList});
     }
@@ -57,11 +58,11 @@ class AdminCreate extends Component {
         const id = event.target.name;
         const value = event.target.value;
         for(let i=0; i < priceList.length; i++) {
-            if(priceList[i][0] === section) {
+            if (priceList[i][0] === section) {
                 priceList[i][1][id] = value;
             }
         }
-        this.setState({priceList: priceList});
+        this.setState({priceList});
     }
 
     submitHandler = () => {
@@ -93,28 +94,30 @@ class AdminCreate extends Component {
     }
 
     displayFeedback = () => {
-        if (this.state.message) {
+        const {message, success} = this.state;
+        if (message) {
             return (
-                <div className={this.state.success ? "success" : "error"}>
-                    <p>{this.state.message}</p>
+                <div className={success ? "success" : "error"}>
+                    <p>{message}</p>
                 </div>
             );
         }
     }
 
     render() {
-        if (this.state.loaded) {
+        const {loaded, name, periods} = this.state;
+        if (loaded) {
             return(
                 <div id="admin_section">
                     <h2 className="center">Create Price Lists</h2>
                     <div className="selector">
                         <div className="priceList-name">
                             <label>Name</label>
-                            <input type="text" value={this.state.name} onChange={(e) => this.priceListNameHandler(e)}/>
+                            <input type="text" value={name} onChange={(e) => this.priceListNameHandler(e)}/>
                         </div>
                         <div className="priceList-name">
                             <label>Periods</label>
-                            <input type="number" value={this.state.periods} onChange={(e) => this.priceListPeriodsHandler(e)}/>
+                            <input type="number" value={periods} onChange={(e) => this.priceListPeriodsHandler(e)}/>
                         </div>
                         <button onClick={this.buttonClickHandler}>Go!</button>
                     </div>
