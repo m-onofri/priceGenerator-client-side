@@ -9,12 +9,12 @@ class AdminUpdate extends Component {
         data: undefined,
         priceList: "ALL_INCLUSIVE",
         priceLists: [],
-        updatedPeriodsNames: []
+        periods: []
     }
 
     twoIntString = (value) => {
         let stringValue = value.toString();
-        if (stringValue.length < 2) stringValue = "0" + stringValue;
+        if (stringValue.length < 2) stringValue = `0${stringValue}`;
         return stringValue;
     }
 
@@ -25,16 +25,14 @@ class AdminUpdate extends Component {
 
     updatePriceList = (event) => {
         const priceList = event.target.value;
-        const updatedPeriodsNames = Object.keys(this.state.data[priceList]);
+        const periods = Object.keys(this.state.data[priceList]);
         this.setState({
             priceList,
-            updatedPeriodsNames
+            periods
         });
     }
 
-    displayNewPeriodForm = () => {
-        this.setState({newPeriod: true});
-    }
+    displayNewPeriodForm = () => this.setState({newPeriod: true});
 
     hideNewPeriodForm = (event) => {
         event.preventDefault();
@@ -42,35 +40,34 @@ class AdminUpdate extends Component {
     }
 
     valueUpdateHandler = (event, period, isPrices) => {
-        const newData = {...this.state.data};
+        const {data, priceList} = this.state;
+        const newData = {...data};
         const name = event.target.name;
         const value = event.target.value;
-        if (isPrices) {
-            newData[this.state.priceList][period]["prices"][name] = value;
-        }
-        newData[this.state.priceList][period][name] = value;
+        if (isPrices) newData[priceList][period]["prices"][name] = value;
+        newData[priceList][period][name] = value;
         this.setState({data: newData});
     }
 
     displayPriceLists = () => {
-        const periods = this.state.updatedPeriodsNames;
-        const priceLists = Object.values(this.state.data[this.state.priceList]);
-        return priceLists.map((priceList, i) => {
+        const {periods, priceList, data} = this.state;
+        const priceLists = Object.values(data[priceList]);
+        return priceLists.map((p, i) => {
             return (
                 <form key={i} method="post" action="http://localhost:9000/priceList/manage">
-                    <input type="text" value={priceList.period} name="period" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
-                    <input type="date" value={this.dateValue(priceList.start)} name="start" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
-                    <input type="date" value={this.dateValue(priceList.end)} name="end" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
-                    <input type="number" value={priceList.prices.ad} name="ad" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
-                    <input type="number" value={priceList.prices.ad34} name="ad34" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
-                    <input type="number" value={priceList.prices.chd3} name="chd3" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
-                    <input type="number" value={priceList.prices.chd4} name="chd4" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
-                    <input type="number" value={priceList.prices.inf} name="inf" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
-                    <input type="number" value={priceList.prices.culla} name="culla" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
-                    <input type="number" value={priceList.prices.animal} name="animal" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
-                    <input type="number" value={priceList.prices.sing} name="sing" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
-                    <input type="hidden" value={priceList._id} name="id" />
-                    <input className="btn btn-update" type="submit" value="Update" name="update" id={priceList._id} onClick={(e) => this.submitHandler(e, i)}/>
+                    <input type="text" value={p.period} name="period" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
+                    <input type="date" value={this.dateValue(p.start)} name="start" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
+                    <input type="date" value={this.dateValue(p.end)} name="end" onChange={(e) => this.valueUpdateHandler(e, periods[i], false)} required/>
+                    <input type="number" value={p.prices.ad} name="ad" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
+                    <input type="number" value={p.prices.ad34} name="ad34" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
+                    <input type="number" value={p.prices.chd3} name="chd3" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
+                    <input type="number" value={p.prices.chd4} name="chd4" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
+                    <input type="number" value={p.prices.inf} name="inf" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
+                    <input type="number" value={p.prices.culla} name="culla" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
+                    <input type="number" value={p.prices.animal} name="animal" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
+                    <input type="number" value={p.prices.sing} name="sing" step="0.01" onChange={(e) => this.valueUpdateHandler(e, periods[i], true)} required min="0"/>
+                    <input type="hidden" value={p._id} name="id" />
+                    <input className="btn btn-update" type="submit" value="Update" name="update" id={p._id} onClick={(e) => this.submitHandler(e, i)}/>
                     <input className="btn btn-delete" type="submit" value="Delete" name="delete"/>
                 </form>
             );
@@ -102,20 +99,21 @@ class AdminUpdate extends Component {
     componentDidMount() {
         const data = this.props.data;
         const priceLists = Object.keys(data);
-        const updatedPeriodsNames = Object.keys(data[this.state.priceList]);
+        const periods = Object.keys(data[this.state.priceList]);
         this.setState({
             loaded: true,
             data,
             priceLists,
-            updatedPeriodsNames
+            periods
         });
     }
 
     displayFeedback = () => {
-        if (this.state.message) {
+        const {message, success} = this.state;
+        if (message) {
             return (
-                <div className={this.state.success ? "success" : "error"}>
-                    <p>{this.state.message}</p>
+                <div className={success ? "success" : "error"}>
+                    <p>{message}</p>
                 </div>
             );
         }
@@ -123,8 +121,8 @@ class AdminUpdate extends Component {
 
     submitHandler = (e, i) => {
         e.preventDefault();
-
-        const updatedPeriod = Object.values(this.state.data[this.state.priceList]).filter(p => p._id === e.target.id)[0];
+        const {data, priceList} = this.state;
+        const updatedPeriod = Object.values(data[priceList]).filter(p => p._id === e.target.id)[0];
         
         this.setState({
             loaded: false,
@@ -154,14 +152,15 @@ class AdminUpdate extends Component {
     }
 
     render() {
-        if (this.state.loaded) {
+        const {loaded, priceLists, priceList} = this.state;
+        if (loaded) {
             return(
                 <div id="admin_section">
                     <h2 className="center">Update Price Lists</h2>
                     <div className="selector">
                         <SelectListini 
-                            priceLists={this.state.priceLists}
-                            value={this.state.priceList}
+                            priceLists={priceLists}
+                            value={priceList}
                             updatePriceList={this.updatePriceList}
                         />
                         <button onClick={this.displayNewPeriodForm}>New Period</button>

@@ -24,7 +24,7 @@ class AdminCreate extends Component {
     //value: integer
     twoIntString = (value) => {
         let stringValue = value.toString();
-        if (stringValue.length < 2) stringValue = "0" + stringValue;
+        if (stringValue.length < 2) stringValue = `0${stringValue}`;
         return stringValue;
     }
 
