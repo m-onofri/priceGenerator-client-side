@@ -19,7 +19,7 @@ const Table = ({rooming, days, prices, total}) => {
         <Resume
           days={days}
           prices={prices}
-          rooming={rooming}
+          rooming={roomingArr}
           total={total}/>
       </tbody>
     </table>
@@ -29,7 +29,7 @@ const Table = ({rooming, days, prices, total}) => {
 Table.propTypes = {
   days: PropTypes.array.isRequired,
   prices: PropTypes.array.isRequired,
-  rooming: PropTypes.object.isRequired,
+  rooming: PropTypes.array.isRequired,
   total: PropTypes.number.isRequired
 }
 

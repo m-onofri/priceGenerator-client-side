@@ -9,7 +9,7 @@ class Resume extends Component {
 
   dailyAmount = (rooming, price) => {
     const total = rooming
-                    .map(r => r[1] * price[r[0]])
+                    .map(([category, number]) => number * price[category])
                     .reduce((a, b) => {
                       return a + b;
                     }, 0);
@@ -17,20 +17,19 @@ class Resume extends Component {
   }
 
   renderTable = (days, prices, rooming) => {
-    const roomingArr = Object.entries(rooming).filter(r => r[1] !== 0);
     let result = [];
     for(let i=0; i < days.length; i++) {
       for(let j=0; j < days[i][1].length; j++) {
         result.push(<tr>
                       <td>{this.renderDate(days[i][1][j])}</td>
-                        {roomingArr.map(r => <td>{r[1]} x {prices[i][1][r[0]]} €</td>)}
-                      <td>{this.dailyAmount(roomingArr, prices[i][1])} €</td>
+                        {rooming.map(([category, number]) => <td>{number} x {prices[i][1][category]} €</td>)}
+                      <td>{this.dailyAmount(rooming, prices[i][1])} €</td>
                     </tr>);
       }
     }
     result.push(<tr>
                   <th>{result.length} days</th>
-                    {roomingArr.map(r => <th>{r[1]}</th>)}
+                    {rooming.map(([category, number]) => <th>{number} {category}</th>)}
                   <th>{this.props.total} €</th>
                 </tr>);
     return result;
@@ -49,7 +48,8 @@ class Resume extends Component {
 Resume.propTypes = {
   days: PropTypes.array.isRequired,
   prices: PropTypes.array.isRequired,
-  rooming: PropTypes.object.isRequired
+  rooming: PropTypes.array.isRequired,
+  total: PropTypes.number.isRequired
 }
 
 export default Resume;
