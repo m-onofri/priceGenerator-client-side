@@ -2,16 +2,16 @@ import React from 'react';
 import Prices from './Prices';
 import PropTypes from 'prop-types';
 
-const PricesList = props =>
+const PricesList = ({prices, days, updatePrices}) =>
   <>
-    {props.prices.map((price, i) => {
-      return <Prices
-               key={i}
-               days={props.days[i][1]}
-               id={price[0]}
-               value={price[1]}
-               updatePrices={props.updatePrices}/>
-    })}
+    {prices.map(([period, pricesObj], i) => 
+      <Prices
+        key={i}
+        days={days[i][1]}
+        id={period}
+        value={pricesObj}
+        updatePrices={updatePrices}/>
+    )}
   </>
 
 PricesList.propTypes = {

@@ -1,23 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Dates = props =>
+const Dates = ({valueArr, updateArrival, valueDep, updateDeparture}) =>
   <>
     <div id="arrival">
       <label>Arrival</label>
       <input
         id="start"
         type="date"
-        value={props.valueArr}
-        onChange={props.updateArrival} />
+        value={valueArr}
+        onChange={updateArrival} />
     </div>
     <div id="departure">
       <label>Departure</label>
       <input
         id="end"
         type="date"
-        value={props.valueDep}
-        onChange={props.updateDeparture} />
+        value={valueDep}
+        onChange={updateDeparture} />
     </div>
   </>
 
